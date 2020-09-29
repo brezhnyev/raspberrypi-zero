@@ -109,6 +109,8 @@ so to deal with that once downloaded you press the letter g to go or
 run the program.  This way you or at least I dont lose any characters
 from the downloaded program.
 
+**Alternativelly you can use Cutecome GUI interface**
+
 I normally do not deliver binaries.  In this case I have left the
 binary in the root directory as bootloader.img, copy this file to
 your sd card and name it kernel.img.
@@ -145,3 +147,11 @@ if you run into this then just make it bigger as well.
 
     ram : ORIGIN = 0x8000, LENGTH = 0x1000000
 
+**Steps how to use the bootloader**
+
+1. Copy the bootloader image to the SD Card as kernel.img
+(now you will have three files there: bootcode.bin start.elf and kernel.img)
+1. Set the SD card to PI and power up PI
+1. Send the coresponding (ex.blinker) srec file over terminal as plain
+1. Press 'g' key on the keyboard
+(see the contents of the bootloader10/notmain.c)

@@ -1,0 +1,9 @@
+
+See the top level README for information on where to find documentation
+for the raspberry pi and the ARM processor inside.  Also find information
+on how to load and run these programs.
+
+This is an LED blinker example for the pi zero.
+
+Blinking with LED connected to GPIO 16 as alternative to blinker01
+with extended comments to code

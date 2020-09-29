@@ -22,19 +22,27 @@ extern void uart_flush ( void );
 
 extern void leds_off ( void );
 
+// We receive one character at a time: 0...1 or A...F each represeting half a byte (see srec files)
+// ASCII code for '0' is 110000 and '9' is 111001
+// then follow 7 symbols like ':' and ';'
+// and then the 'A', 'B' ... 'F' (see ASCII table)
+// so we offset the A,B,C symbols ... by 7 positions to have contigeous sequence: ..8,9,A,B,C..
 unsigned int ctonib ( unsigned int c )
 {
     if(c>0x39) c-=7;
     return(c&0xF);
 }
 
+// http://srecord.sourceforge.net/man/man5/srec_motorola.html
+// Checksum: The checksum is an 8-bit field that represents the least significant byte of the one’s complement 
+// of the sum of the values represented by the pairs of characters making up the record’s length, address, and data fields.
 int notmain ( void )
 {
     unsigned int state;
     unsigned int ra;
     unsigned int type;
-    unsigned int count;
-    unsigned int sum;
+    unsigned int count; // number of bytes in the data (including size and CRC)
+    unsigned int sum; // checksum
     unsigned int entry;
     unsigned int addr;
     unsigned int data;
@@ -110,7 +118,7 @@ int notmain ( void )
                 }
                 break;
             }
-
+            // Reading size -----------------------------
             case 2:
             {
                 count=ctonib(ra);
@@ -131,6 +139,8 @@ int notmain ( void )
                 state++;
                 break;
             }
+            // Reading address -----------------------------
+            // read 8 positions each representing half a byte totalling to 32 bit address
             case  4:
             case  6:
             case  8:
@@ -144,14 +154,6 @@ int notmain ( void )
             case  5:
             case  7:
             case  9:
-            {
-                count--;
-                addr<<=4;
-                addr|=ctonib(ra);
-                sum+=addr&0xFF;
-                state++;
-                break;
-            }
             case 11:
             {
                 count--;
@@ -161,6 +163,7 @@ int notmain ( void )
                 state++;
                 break;
             }
+            // Reading data -----------------------------
             case 12:
             {
                 data=ctonib(ra);
