@@ -33,6 +33,14 @@ unsigned int ctonib ( unsigned int c )
     return(c&0xF);
 }
 
+void print(char * text, int len)
+{
+    for (int i = 0; i < len; ++i)
+    {
+        uart_send(text[i]);
+    }
+}
+
 // http://srecord.sourceforge.net/man/man5/srec_motorola.html
 // Checksum: The checksum is an 8-bit field that represents the least significant byte of the one’s complement 
 // of the sum of the values represented by the pairs of characters making up the record’s length, address, and data fields.
@@ -68,6 +76,8 @@ int notmain ( void )
     addr=0;
     type=0;
     entry=0x00008000;
+
+    int startedDwnld = 0;
     while(1)
     {
         ra=uart_recv();
@@ -79,6 +89,11 @@ int notmain ( void )
                 {
                     sum=0;
                     state++;
+                    if (!startedDwnld)
+                    {
+                        print("Started downloading...\n", 23);
+                        startedDwnld = 1;
+                    }
                 }
                 if((ra=='g')||(ra=='G'))
                 {
@@ -181,6 +196,7 @@ int notmain ( void )
                     if(type==7)
                     {
                         entry=addr;
+                        print("Download completed!\n", 20);
                     }
                     sum&=0xFF;
                     if(sum!=0xFF)

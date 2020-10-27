@@ -31,6 +31,8 @@ assemble then disassemble, we are relying here on the disassembler
 to disassemble data as well as instructions, so we place data but
 it disassembles them as instructions which was the goal.
 
+Assemble: add the .word instruction to each line of the terminal output and run *arm-none-eabi-as bootstrap.s -o bootstrap.o*
+Disassemble: run *arm-none-eabi-objdump -D ./bootstrap.o*
 
 00000000 <.text>:
    0:	e3a00000 	mov	r0, #0
